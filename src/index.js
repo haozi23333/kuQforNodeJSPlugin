@@ -15,5 +15,5 @@ export {
     Api,
     Client,
     cov,
-    recov
+    recov 
 }

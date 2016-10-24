@@ -43,7 +43,7 @@ export default class Api {
             return this.returnPromise(data)
         else
             this.send(data,callback)
-    }
+    } 
 
     /**
      * 向讨论组发信息

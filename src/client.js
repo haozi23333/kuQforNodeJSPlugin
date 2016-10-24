@@ -92,7 +92,7 @@ export default class client extends events.EventEmitter{
     split(data){
         let type = ""
         let msg = {}
-        switch (data[0]){
+        switch (data[0]){ 
             case 'PrivateMessage':
                 type = 'PrivateMessage'
                 msg.fromQQ = data[1]
