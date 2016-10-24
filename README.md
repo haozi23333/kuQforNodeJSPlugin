@@ -104,6 +104,28 @@ _(:зゝ∠)_
 
 
 ```
+
+##ES5
+```javascript
+    var sdk = require('node-coolQ')
+
+
+    var Api = sdk.Api
+    var Client = sdk.Client
+
+
+
+    var client = new Client(25565)
+
+
+    var api = new Api(client)
+
+    client.on('connect',()=>{
+    	console.log("OK")
+    	api.PrivateMessage("296409654","haozi233333")
+    })
+
+```
 ##event list
 
 1. data                     SDK接收的全部的数据
