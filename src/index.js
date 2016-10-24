@@ -8,9 +8,12 @@ import iconv from 'iconv'
 
 let Iconv = iconv.Iconv
 let cov = new Iconv('UTF-8','GBK')
+let recov = new Iconv('GBK','UTF-8')
+
 
 export {
     Api,
     Client,
-    cov
+    cov,
+    recov
 }

@@ -8,6 +8,8 @@ import iconv from 'iconv'
 
 let Iconv = iconv.Iconv
 let cov = new Iconv('UTF-8','GBK')
+let recov = new Iconv('GBK','UTF-8')
+
 
 const HOST = '127.0.0.1';
 const PORT = 11235;
@@ -94,21 +96,19 @@ export default class client extends events.EventEmitter{
             case 'PrivateMessage':
                 type = 'PrivateMessage'
                 msg.fromQQ = data[1]
-                msg.content = (new Buffer(data[2],'base64')).toString()
+                msg.content = recov.convert((new Buffer(data[2],'base64')).toString())
                 break
             case 'DiscussMessage':
                 type = 'DiscussMessage'
-                msg = [data[0],data[1],(new Buffer(data[2],'base64')).toString()]
                 msg.discuss = data[1]
                 msg.fromQQ = data[2]
-                msg.content = (new Buffer(data[3],'base64')).toString()
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
                 break
             case 'GroupMessage':
                 type = 'GroupMessage'
-                msg = [data[0],data[1],(new Buffer(data[2],'base64')).toString()]
                 msg.group = data[1]
                 msg.fromQQ = data[2]
-                msg.content = (new Buffer(data[3],'base64')).toString()
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
                 break
             default:
                 type = data[0]

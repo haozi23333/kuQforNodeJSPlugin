@@ -2,25 +2,10 @@
 
 var run = function () {
     var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-        var api;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
                     case 0:
-                        console.log('fuck start');
-                        _context.next = 3;
-                        return client.waitConnect();
-
-                    case 3:
-                        api = new _lib.Api(client);
-
-
-                        api.PrivateMessage("296409654", "23333", function (_) {});
-                        api.GroupMessage("304876598", "Test", function (_) {});
-                        client.send("RcvdGroupMessage", function (_) {});
-                        console.log("OK?");
-
-                    case 8:
                     case 'end':
                         return _context.stop();
                 }
