@@ -49,8 +49,6 @@ export default class client extends events.EventEmitter{
 
         this.server.on('message', (msg, rinfo) => {
             let m =(new Buffer(msg, 'base64').toString()).split(' ')
-            // if(m[0] == 'PrivateMessage')
-            //     console.log('from '+m[1] +' -> '+ new Buffer(m[2],'base64').toString())
             this.emit('data',m)
             this.split(m)
         });
@@ -68,6 +66,13 @@ export default class client extends events.EventEmitter{
             this.send("ClientHello "+this.port)
         },300000)
     }
+
+    /**
+     *  发送原数据
+     * @param data 数据
+     * @param callback 回调
+     * @returns {Promise}
+     */
     send(data,callback){
         let msg = data.toString('base64')
         if(!callback){
@@ -84,19 +89,41 @@ export default class client extends events.EventEmitter{
     }
     split(data){
         let type = ""
-        let msg = []
+        let msg = {}
         switch (data[0]){
             case 'PrivateMessage':
                 type = 'PrivateMessage'
+                msg.fromQQ = data[1]
+                msg.content = (new Buffer(data[2],'base64')).toString()
+                break
+            case 'DiscussMessage':
+                type = 'DiscussMessage'
                 msg = [data[0],data[1],(new Buffer(data[2],'base64')).toString()]
+                msg.discuss = data[1]
+                msg.fromQQ = data[2]
+                msg.content = (new Buffer(data[3],'base64')).toString()
+                break
+            case 'GroupMessage':
+                type = 'GroupMessage'
+                msg = [data[0],data[1],(new Buffer(data[2],'base64')).toString()]
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                msg.content = (new Buffer(data[3],'base64')).toString()
                 break
             default:
                 type = data[0]
-                msg = data.slice(0,data.length)
+                msg.content = data.slice(0,data.length)
                 break
         }
+
+        msg.type = type
         this.emit(type,msg)
     }
+
+    /**
+     * 
+     * @returns {Promise}
+     */
     waitConnect(){
         return new Promise( (s,j) => {
             this.on('connect',()=>{

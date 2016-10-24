@@ -3,13 +3,13 @@
  */
 
 
-import {Api,Client} from './lib'
+import {Api,Client,cov} from './lib'
 
 
-import iconv from 'iconv'
-
-let Iconv = iconv.Iconv
-let cov = new Iconv('UTF-8','GBK')
+// import iconv from 'iconv'
+//
+// let Iconv = iconv.Iconv
+// let cov = new Iconv('UTF-8','GBK')
 
 let client = new Client(25565)
 
@@ -19,18 +19,14 @@ client.on('data', (data)=>{
     console.log(data[0] + ' -> '+data[1]+' -> '+(new Buffer(data[2],'base64')).toString())
 })
 
+client.on('GroupMessage',(data)=>{
+    "use strict";
+    console.log(`from ${data[1]} -> ${data[2]}`)
+})
 
 
 
 async function run () {
-    console.log('fuck start');
-    await client.waitConnect()
-    const api = new Api(client)
-
-    api.PrivateMessage("296409654","23333", _ => {})
-    api.GroupMessage("55306867","Test", _=>{})
-
-    console.log("OK?")
 }
 
-run().then(_ => {  });
+run().then( _ => {  });
