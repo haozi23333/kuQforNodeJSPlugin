@@ -104,6 +104,16 @@ _(:зゝ∠)_
 
 
 ```
+##covApi
+```javascript
+    var cov = sdk.cov
+      /**
+       * 由UTF-8 字符集 转到 GBK 字符集
+       * @param data 需要转换的文字
+       * @returns {Buffer}
+       */
+    cov.convert(data)
+```
 
 ##ES5
 ```javascript
