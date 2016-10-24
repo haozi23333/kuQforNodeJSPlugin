@@ -3,26 +3,34 @@
  */
 
 
-import Client from './lib/client'
+import {Api,Client} from './lib'
 
-var Iconv  = require('iconv').Iconv
 
+import iconv from 'iconv'
+
+let Iconv = iconv.Iconv
 let cov = new Iconv('UTF-8','GBK')
 
 let client = new Client(25565)
 
-client.on('data',(data)=>{
+client.on('data', (data)=>{
     "use strict";
-    console.log(data)
+    if(data[0]=='PrivateMessage')
+    console.log(data[0] + ' -> '+data[1]+' -> '+(new Buffer(data[2],'base64')).toString())
 })
 
 
-setTimeout(()=>{
-    "use strict";
-    client.emit('send','SendPrivateMessage 296409654 '+cov.convert("SB 0u0 辣鸡").toString('base64'),(err)=>{
-        if(err)
-            throw err
-        else
-            console.log('success')
-    })
-},2000)
+
+
+async function run () {
+    console.log('fuck start');
+    await client.waitConnect()
+    const api = new Api(client)
+
+    api.PrivateMessage("296409654","23333", _ => {})
+    api.GroupMessage("55306867","Test", _=>{})
+
+    console.log("OK?")
+}
+
+run().then(_ => {  });
