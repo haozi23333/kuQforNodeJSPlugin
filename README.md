@@ -21,6 +21,10 @@ _(:зゝ∠)_
 ```javascript
     import {Api,Client,cov} from './lib'
 
+
+
+    // 参数是端口号 不能是 11235  QAQ
+    // 是node这边启动服务器bind的端口
     let client = new Client(25565)
 
     client.on('data', (data)=>{
