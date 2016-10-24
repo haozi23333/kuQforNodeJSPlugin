@@ -10,7 +10,7 @@ _(:зゝ∠)_
  3. Restart CoolQ.
  4. Install using npm
 
-    `npm install coolQforNodejs`
+    `npm install node-coolQ --save`
 
 `node >= 0.12`
 
