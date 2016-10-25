@@ -97,21 +97,21 @@ export default class client extends events.EventEmitter{
             case 'PrivateMessage':
                 type = 'PrivateMessage'
                 msg.fromQQ = data[1]
-                msg.content = recov.convert((new Buffer(data[2],'base64')).toString())
+                msg.content = recov.convert((new Buffer(data[2],'base64')).toString()).toString()
                 break
             //讨论组消息
             case 'DiscussMessage':
                 type = 'DiscussMessage'
                 msg.discuss = data[1]
                 msg.fromQQ = data[2]
-                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString()).toString()
                 break
             //群消息
             case 'GroupMessage':
                 type = 'GroupMessage'
                 msg.group = data[1]
                 msg.fromQQ = data[2]
-                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString()).toString()
                 break
             // Type=101 群事件-管理员变动
             case 'GroupAdmin':
