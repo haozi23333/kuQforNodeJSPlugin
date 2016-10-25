@@ -1,6 +1,6 @@
 {
   "name": "node-coolq",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "coolQ Socket Api for Nodejs",
   "main": "index.js",
   "scripts": {
@@ -18,14 +18,15 @@
     "plugin"
   ],
   "license": "WTFPL",
-  "author":"haozi23333",
+  "author": "haozi23333",
   "dependencies": {
     "babel-core": "^6.9.1",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-3": "^6.5.0",
-    "iconv": "^2.2.1"
+    "iconv": "^2.2.1",
+    "node-uuid": "^1.4.7"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
@@ -36,7 +37,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0"
   },
-  "bugs":{
+  "bugs": {
     "url": "https://github.com/haozi23333/kuQforNodeJSPlugin/issues"
   }
 }

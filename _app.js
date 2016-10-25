@@ -6,17 +6,12 @@
 import {Api,Client,cov} from './lib'
 
 
-// import iconv from 'iconv'
-//
-// let Iconv = iconv.Iconv
-// let cov = new Iconv('UTF-8','GBK')
+
 
 let client = new Client(25565)
 
 client.on('data', (data)=>{
     "use strict";
-    if(data[0]=='PrivateMessage')
-    console.log(data[0] + ' -> '+data[1]+' -> '+(new Buffer(data[2],'base64')).toString())
 })
 
 client.on('GroupMessage',(data)=>{
@@ -25,8 +20,16 @@ client.on('GroupMessage',(data)=>{
 })
 
 
-
+let api = null
 async function run () {
+    "use strict";
+    await client.waitConnect()
+
+    api = new Api(client)
+    api.setPath('I:\酷Q Air')
+    let id = api.movePic('C:\\Users\\haozi\\Desktop\\BZ\\hj.png')
+    await api.PrivateMessage('296409654',api.getCode())
+
 }
 
 run().then( _ => {  });
