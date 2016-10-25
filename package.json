@@ -1,6 +1,6 @@
 {
   "name": "node-coolq",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "coolQ Socket Api for Nodejs",
   "main": "index.js",
   "scripts": {
