@@ -92,20 +92,61 @@ export default class client extends events.EventEmitter{
     split(data){
         let type = ""
         let msg = {}
-        switch (data[0]){ 
+        switch (data[0]){
+            //私聊消息
             case 'PrivateMessage':
                 type = 'PrivateMessage'
                 msg.fromQQ = data[1]
                 msg.content = recov.convert((new Buffer(data[2],'base64')).toString())
                 break
+            //讨论组消息
             case 'DiscussMessage':
                 type = 'DiscussMessage'
                 msg.discuss = data[1]
                 msg.fromQQ = data[2]
                 msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
                 break
+            //群消息
             case 'GroupMessage':
                 type = 'GroupMessage'
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
+                break
+            // Type=101 群事件-管理员变动
+            case 'GroupAdmin':
+                type = 'GroupAdmin'
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                if(data[2]==1)
+                    msg.admin = true
+                else
+                    msg.admin = false
+                break
+            //群事件-群成员减少
+            case 'GroupMemberDecrease':
+                type = 'GroupMemberDecrease'
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                msg.beingOperateQQ = data[3]
+                break
+            // 群事件-群成员增加
+            case 'GroupMemberIncrease':
+                type = 'GroupMemberIncrease'
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                msg.beingOperateQQ = data[3]
+                break
+            // 好友事件-好友已添加
+            case '****':
+                type = '****'
+                msg.group = data[1]
+                msg.fromQQ = data[2]
+                msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
+                break
+            // 请求-好友添加
+            case '***':
+                type = '***'
                 msg.group = data[1]
                 msg.fromQQ = data[2]
                 msg.content = recov.convert((new Buffer(data[3],'base64')).toString())
@@ -115,7 +156,6 @@ export default class client extends events.EventEmitter{
                 msg.content = data.slice(0,data.length)
                 break
         }
-
         msg.type = type
         this.emit(type,msg)
     }
