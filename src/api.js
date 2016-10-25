@@ -86,7 +86,11 @@ export default class Api {
             console.log(e.message)
         }
     }
-    
+
+    /**
+     * 
+     * @returns {code}
+     */
     getCode(){
         return code
     }

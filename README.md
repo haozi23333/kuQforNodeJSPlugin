@@ -140,6 +140,68 @@ _(:зゝ∠)_
     })
 
 ```
+##code API
+```javascript
+
+    
+    /**
+     *  返回code类的实例
+     * @returns {code}
+     */
+    api.getCode()
+
+class code{
+    /**
+     *  构造 qq表情信息
+     * @param id
+     * @returns {string}
+     */
+    static getQQFace(id)
+
+    /**
+     *  构造 emoji 表情信息
+     * @param id emojiID
+     * @returns {string}
+     */
+    static getQQEmoji(id)
+
+    /**
+     * 构造图片信息
+     * @param id 图片在文件夹的id
+     * @returns {string}
+     */
+    static getImage(id)
+
+    /**
+     *  构造@信息
+     * @param qq
+     * @returns {string}
+     */
+    static getAt(qq)
+
+    /**
+     *  抖动窗口  仅限好友
+     * @returns {string}
+     */
+    static getShake()
+
+    /**
+     * 发送匿名消息
+     * @param ignore false或ignore参数被忽略时，代表强制使用匿名，如果匿名失败将取消该消息的发送。 为true时，代表不强制使用匿名，如果匿名失败将转为普通消息发送。
+     * @returns {string}
+     */
+    static getAnonymous(ignore)
+
+    /**
+     *  发送音乐信息
+     * @param id
+     * @returns {string}
+     */
+    static getMusic(id)
+}
+
+```
+
 ##event list
 
 1. data                     SDK接收的全部的数据
