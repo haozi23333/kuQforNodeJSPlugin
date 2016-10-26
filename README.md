@@ -208,7 +208,7 @@ class code{
 2. connect                  连接成功触发这个事件
 3. PrivateMessage           好友聊天信息事件
 4. DiscussMessage           讨论组聊天信息事件
-5. GroupMessage             讨论组聊天信息事件 
+5. GroupMessage             群聊天信息事件 
 6. GroupAdmin               群事件-管理员变动事件
 7. GroupMemberDecrease      群事件-群成员减少事件
 8. GroupMemberIncrease      群事件-群成员增加事件
