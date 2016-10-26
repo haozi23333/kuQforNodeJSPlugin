@@ -105,6 +105,12 @@ export default class Api {
             })
         })
     }
+
+    /**
+     * 
+     * @param data
+     * @param callback
+     */
     send(data,callback){
         this.client.send(data,callback)
     }
