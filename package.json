@@ -4,7 +4,7 @@
   "description": "coolQ Socket Api for Nodejs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "compile": "babel -d lib/ src/ && babel _app.js --out-file app.js",
     "mdzz": "npm run compile && node --harmony index.js"
   },
