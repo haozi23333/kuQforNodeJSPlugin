@@ -1,6 +1,6 @@
 {
   "name": "node-coolq",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "coolQ Socket Api for Nodejs",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,10 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-3": "^6.5.0",
     "iconv": "^2.2.1",
-    "node-uuid": "^1.4.7"
+    "is-generator-function": "^1.0.3",
+    "koa-compose": "3.0.0",
+    "koa-convert": "^1.2.0",
+    "path-to-regexp": "^1.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",

@@ -3,33 +3,59 @@
  */
 
 
-import {Api,Client,cov} from './lib'
+import {Api,Client,cov,Route} from './lib'
 
 
 
 
-let client = new Client(25565)
+let client = new Client()
+let api = new Api(client)
 
-client.on('data', (data)=>{
+
+// client.on('PrivateMessage',(data)=>{
+//     "use strict";
+//     if(data.fromQQ == '820950794')
+//     {
+//         api.PrivateMessage('820950794','[CQ:image,file=81D06774959C4CDDE75F588DC32D50C0.jpg]',_=>{})
+//     }
+// })
+
+
+client.use(async (data,next)=>{
     "use strict";
+    await next()
+}).use(async (data,next)=>{
+    "use strict";
+    await next()
 })
 
-client.on('GroupMessage',(data)=>{
-    "use strict";
-    console.log(`from ${data[1]} -> ${data[2]}`)
+
+let r = new Route({
+    prefix : 'haozi'
 })
 
 
-let api = null
-async function run () {
+r.reg('/:cmd',async (data)=>{
     "use strict";
-    await client.waitConnect()
+    console.log('route haozi')
+    console.log(data)
+})
+console.log(r.route())
+client.use(r.route())
 
-    api = new Api(client)
-    api.setPath('I:\酷Q Air')
-    let id = api.movePic('C:\\Users\\haozi\\Desktop\\BZ\\hj.png')
-    await api.PrivateMessage('296409654',api.getCode())
 
-}
+let f = new Route({
+    prefix : 'cao'
+})
 
-run().then( _ => {  });
+f.reg('/hello/:cmd',async (data)=>{
+    "use strict";
+    console.log(data)
+})
+
+
+
+client.use(f.route())
+
+
+client.listen(11235,25565)

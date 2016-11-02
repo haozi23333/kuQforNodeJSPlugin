@@ -5,6 +5,9 @@
 import dgram from 'dgram'
 import events from 'events'
 import iconv from 'iconv'
+import compose from 'koa-compose'
+import convert from 'koa-convert'
+import isGeneratorFunction from 'is-generator-function'
 
 let Iconv = iconv.Iconv
 let cov = new Iconv('UTF-8','GBK')
@@ -12,24 +15,24 @@ let recov = new Iconv('GBK','UTF-8')
 
 
 const HOST = '127.0.0.1';
-const PORT = 11235;
+const PORT = 0;
 
 
 
 
 export default class client extends events.EventEmitter{
-    constructor(port){
+    constructor(){
         super()
-        this.port = port
-        this.client = dgram.createSocket('udp4')
-        this.server = dgram.createSocket('udp4');
-        this.server.bind(port)
-
-        this.listen()
-        this.init()
+        this.middlewares = []
     }
 
-    init(){
+    init(serverport,port){
+        this.serverPort = serverport
+        this.port = port
+        this.client = dgram.createSocket('udp4')
+        this.server = dgram.createSocket('udp4')
+        this.server.bind(port)
+        this.listener()
         this.send("ClientHello "+this.port,(err,rinfo)=>{
             "use strict";
             if(err)
@@ -38,8 +41,14 @@ export default class client extends events.EventEmitter{
             this.emit('connect',{...rinfo})
             this.heartRate()
         })
+        this._callack = this.callback()
+
     }
-    listen(){
+
+    listen(serverport,port){
+        this.init(serverport||11235,port||25565)
+    }
+    listener(){
         this.client.on('message',(data)=>{
             "use strict";
             console.log(new Buffer(data, 'base64').toString())
@@ -79,7 +88,7 @@ export default class client extends events.EventEmitter{
         let msg = data.toString('base64')
         if(!callback){
             return new Promise((s,j)=>{
-                this.client.send(msg,0,msg.length,PORT, HOST,function (err) {
+                this.client.send(msg,0,msg.length,this.serverPort, HOST,function (err) {
                     if(err)
                         s(err)
                     else
@@ -87,7 +96,7 @@ export default class client extends events.EventEmitter{
                 })
             })
         }else
-            this.client.send(msg,0,msg.length,PORT, HOST,callback)
+            this.client.send(msg,0,msg.length,this.serverPort, HOST,callback)
     }
     split(data){
         let type = ""
@@ -158,6 +167,8 @@ export default class client extends events.EventEmitter{
         }
         msg.type = type
         this.emit(type,msg)
+        msg.type = type
+        this._callack(msg)
     }
 
     /**
@@ -187,5 +198,23 @@ export default class client extends events.EventEmitter{
         this.client.close()
         this.server.close()
     }
+    onerror(err){
+        throw err
+    }
+    use(fn){
+        if (typeof fn !== 'function') throw new TypeError('middleware must be a function!');
+        if(isGeneratorFunction(fn)){
+            fn = convert(fn)
+        }
+        this.middlewares.push(fn)
+        return this
+    }
+    callback(){
+        const fn = compose(this.middlewares);
+        return (data) =>{
+            fn(data).then(()=>{
 
+            }).catch(this.onerror)
+        }
+    }
 }
