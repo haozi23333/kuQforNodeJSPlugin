@@ -9,9 +9,18 @@ let Iconv = iconv.Iconv
 let cov = new Iconv('UTF-8','GBK')
 
 export default class Api {
+    /**
+     *
+     * @param client
+     */
     constructor(client) {
         this.client  = client
     }
+
+    /**
+     *  设置coolQ的根目录
+     * @param path
+     */
     setPath(path){
         this.path = path
     }

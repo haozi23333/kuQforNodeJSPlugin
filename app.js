@@ -87,6 +87,7 @@ r.reg('/:cmd', function () {
 }());
 console.log(r.route());
 client.use(r.route());
+
 var f = new _lib.Route({
     prefix: 'cao'
 });

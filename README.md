@@ -1,14 +1,19 @@
 # coolQ for Nodejs SDK
-coolQ Socket Api for Nodejs
+coolQ 的 基于socketApi 的 Nodejs SDK
+
+:simple_smile: 建议使用ES6/ES7的语法
+
+:star:  中间件！！
+:star:  路由！！
 
 ##Intro
 _(:зゝ∠)_
 
 ##Installation
- 1. Place [org.dazzyd.cqsocketapi.cpk](https://github.com/yukixz/cqsocketapi/releases) into CoolQ app folder.
- 2. Enable CQSocketAPI in CoolQ App management windoes.
- 3. Restart CoolQ.
- 4. Install using npm
+ 1. 请安装 [org.dazzyd.cqsocketapi.cpk](https://github.com/yukixz/cqsocketapi/releases) 
+ 2. 在酷Q中开启插件
+ 3. 重启酷Q
+ 4. 安装本模块
 
     `npm install node-coolq --save`
 
@@ -19,15 +24,13 @@ _(:зゝ∠)_
 
 
 ```javascript
-    import {Api,Client,cov} from './lib'
+    import {Api,Client,Route} from './lib'
 
 
+    // 实例化 客户端
+    let app = new Client()
 
-    // 参数是端口号 不能是 11235  QAQ
-    // 是node这边启动服务器bind的端口
-    let client = new Client(25565)
-
-    client.on('data', (data)=>{
+    app.on('data', (data)=>{
         "use strict";
         //接收没有被处理过的数据
         //      type           data1        data2       data3       data...
@@ -40,8 +43,8 @@ _(:зゝ∠)_
        * @param eventName  事件名称
        * @param callback   回调
        */
-       client.on(eventName,callback)
-    client.on('GroupMessage',(data)=>{
+    app.on(eventName,callback)
+    app.on('GroupMessage',(data)=>{
         "use strict";
          data => {
             type:"eventName",
@@ -57,16 +60,143 @@ _(:зゝ∠)_
      * @param callback 回调
      * @returns {Promise}
      */
-    client.send(data,callback)
+    app.send(data,callback)
     //async
-    await client.send(data)
+    await app.send(data)
 
     /**
     * 同步等待服务器连接成功
     * @returns {Promise}
     */
-     await client.waitConnect()
+     await app.waitConnect()
+     
+    /**
+     * 必须在use之后调用
+     */
+     app.listen()
 ```
+
+## middleware Api
+```javascript
+    
+     /**
+      * 中间件
+      * @param fn {Promise}
+      * @returns {client}
+      */
+     app.use(fn)
+     
+     app.use(async (ctx,next)=>{
+            console.log(1)
+            await next()
+            console.log(3)
+     })
+     app.use(async (ctx,next)=>{
+                 console.log(2)
+                 await next()
+    })
+    log >1
+         2
+         3
+     
+```
+[参考](https://github.com/guo-yu/koa-guide#级联代码cascading) 和Koa的一样 但是我们使用ES6语法
+
+## Route Api
+```javascript
+        
+    /**
+    *  构造路由
+    * @param opts
+    * @param opts.commas 命令分隔符 默认空格
+    * @param opts.prefix 命令前缀  默认空
+    */
+     
+     let route = new Route(opt)   
+     
+     
+```
+
+```javascript
+    import {Api,Client,Route} from 'node-coolq'
+    
+    const app = new Client()
+    
+    const router = new Route();
+    
+    router.reg('/:cmd',async ()=>{
+        "use strict";
+    
+    })
+    
+    app.use(router.routes())
+    
+    app.listen(serverPort,localPort)
+```
+
+**命令分割**
+```javascript
+    
+    const router = new Route({
+        commas : "#"
+    });
+    
+```
+设置命令分隔符
+如果是`#`那么 你#好#啊 -> [你,好,啊]
+如果是`&&`那么 你&&好&&啊 -> [你,好,啊]
+默认是空格
+
+
+**路由前缀**
+```javascript
+    
+    const router = new Route({
+        prefix : "#"
+    });
+    
+    router.reg('/',...) // 接受 #命令
+    router.reg('/:cmd',...)//接受 #:id
+```
+
+**例子** 
+简单使用:
+     
+```javascript
+    import {Api,Client,Route} from 'node-coolq'
+    
+    const app = new Client()
+    
+    const router = new Route({
+        prefix : 'haozi'
+    });
+    
+    
+    router.reg('/login/:account/:password',async (body)=>{
+        "use strict";
+        console.log(body)
+        
+    })
+    
+    app.use(router.routes())
+    
+    app.listen(serverPort,localPort)
+    
+    //例子
+    QQ -> app () -> "haozi user1 password1"
+    
+    console.log()↓
+    {
+        type:'MessageType',
+        content:'haozi user1 password1',
+        fromQQ:'QQ',
+        account = 'user1',
+        password:'password1'
+    }
+```
+     
+    
+
 ##SdkApi
 
 ```javascript
@@ -108,16 +238,6 @@ _(:зゝ∠)_
 
 
 ```
-##covApi
-```javascript
-    var cov = sdk.cov
-      /**
-       * 由UTF-8 字符集 转到 GBK 字符集
-       * @param data 需要转换的文字
-       * @returns {Buffer}
-       */
-    cov.convert(data)
-```
 
 ##ES5
 ```javascript
@@ -129,12 +249,12 @@ _(:зゝ∠)_
 
 
 
-    var client = new Client(25565)
+    var app = new Client(25565)
 
 
-    var api = new Api(client)
+    var api = new Api(app)
 
-    client.on('connect',()=>{
+    app.on('connect',()=>{
     	console.log("OK")
     	api.PrivateMessage("296409654","haozi233333")
     })

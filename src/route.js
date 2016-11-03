@@ -3,11 +3,18 @@
  */
 
     import pathToRegexp from 'path-to-regexp'
+    import isGeneratorFunction from 'is-generator-function'
+
 
 
 
 class Route {
-
+    /**
+     *  构造路由
+     * @param opts
+     * @param opts.commas 命令分隔符 默认空格
+     * @param opts.prefix 命令前缀  默认空
+     */
     constructor(opts) {
         this.opts = opts || {}
         this.opts.commas  = this.opts.commas || ' '
@@ -17,11 +24,20 @@ class Route {
         this.prefixReg = new RegExp(this.opts.commas||' ','g')
     }
 
+    /**
+     * 创建路由
+     * @param path 路由参数
+     * @param fn   回调函数
+     * @param opts  设置
+     */
     reg(path,fn,opts={}){
         if(!path)
             throw Error('path must be existed')
         if(!fn)
             throw Error('callback must be a function')
+        if(isGeneratorFunction(fn)){
+            fn = convert(fn)
+        }
         opts = opts || {}
 
         let r = {
@@ -30,8 +46,14 @@ class Route {
             prefix:this.opts.prefix||'/'
         }
         this.m.push(r)
+        return this
     }
-    route(){
+
+    /**
+     *
+     * @returns {function()}
+     */
+    routes(){
         console.log(1);
         return async (data,next) => {
             let msg = (data.content || '').replace(this.prefixReg,'/')
@@ -44,7 +66,11 @@ class Route {
                 if (g) {
                     data.body = {}
                     this.m[i].regexp.keys.map((j, _i)=> {
-                        data.body[j.name] = g[_i + 1]
+                        try{
+                            data.body[j.name]  = JSON.parse(g[_i+1])
+                        }catch (e){
+                            data.body[j.name] = g[_i + 1]
+                        }
                     })
                     await this.m[i].fn(data)
                 }

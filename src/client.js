@@ -26,6 +26,11 @@ export default class client extends events.EventEmitter{
         this.middlewares = []
     }
 
+    /**
+     * 初始化
+     * @param serverport
+     * @param port
+     */
     init(serverport,port){
         this.serverPort = serverport
         this.port = port
@@ -45,6 +50,11 @@ export default class client extends events.EventEmitter{
 
     }
 
+    /**
+     * 监听
+     * @param serverport
+     * @param port
+     */
     listen(serverport,port){
         this.init(serverport||11235,port||25565)
     }
@@ -72,6 +82,10 @@ export default class client extends events.EventEmitter{
             this.send(data)
         })
     }
+
+    /**
+     * 心跳服务
+     */
     heartRate(){
         this.heart = setInterval(()=>{
             this.send("ClientHello "+this.port)
@@ -98,6 +112,11 @@ export default class client extends events.EventEmitter{
         }else
             this.client.send(msg,0,msg.length,this.serverPort, HOST,callback)
     }
+
+    /**
+     * 剪裁数据并发送
+     * @param data
+     */
     split(data){
         let type = ""
         let msg = {}
@@ -172,7 +191,7 @@ export default class client extends events.EventEmitter{
     }
 
     /**
-     * 
+     * 同步等待连接
      * @returns {Promise}
      */
     waitConnect(){
@@ -201,6 +220,12 @@ export default class client extends events.EventEmitter{
     onerror(err){
         throw err
     }
+
+    /**
+     * 中间件
+     * @param fn
+     * @returns {client}
+     */
     use(fn){
         if (typeof fn !== 'function') throw new TypeError('middleware must be a function!');
         if(isGeneratorFunction(fn)){
@@ -213,7 +238,7 @@ export default class client extends events.EventEmitter{
         const fn = compose(this.middlewares);
         return (data) =>{
             fn(data).then(()=>{
-
+                    
             }).catch(this.onerror)
         }
     }
