@@ -70,10 +70,6 @@ r.reg('/:cmd', function () {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
-                        console.log('route haozi');
-                        console.log(data);
-
-                    case 2:
                     case "end":
                         return _context3.stop();
                 }
@@ -85,34 +81,18 @@ r.reg('/:cmd', function () {
         return _ref3.apply(this, arguments);
     };
 }());
-console.log(r.route());
-client.use(r.route());
+client.use(r.routes());
 
 var f = new _lib.Route({
     prefix: 'cao'
 });
 
-f.reg('/hello/:cmd', function () {
-    var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(data) {
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-            while (1) {
-                switch (_context4.prev = _context4.next) {
-                    case 0:
-                        console.log(data);
+f.reg('/hello/:cmd', function (data) {
+    "use strict";
 
-                    case 1:
-                    case "end":
-                        return _context4.stop();
-                }
-            }
-        }, _callee4, undefined);
-    }));
+    console.log(data);
+});
 
-    return function (_x6) {
-        return _ref4.apply(this, arguments);
-    };
-}());
-
-client.use(f.route());
+client.use(f.routes());
 
 client.listen(11235, 25565);

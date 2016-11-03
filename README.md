@@ -72,8 +72,11 @@ _(:зゝ∠)_
      
     /**
      * 必须在use之后调用
+     * @param serverPort coolqSocket插件的端口 默认11235
+     * @param localPort 本地socket的端口 默认25565
      */
-     app.listen()
+     
+     app.listen(serverPort,localPort)
 ```
 
 ## middleware Api
@@ -92,8 +95,8 @@ _(:зゝ∠)_
             console.log(3)
      })
      app.use(async (ctx,next)=>{
-                 console.log(2)
-                 await next()
+            console.log(2)
+            await next()
     })
     log >1
          2
@@ -158,6 +161,24 @@ _(:зゝ∠)_
     router.reg('/',...) // 接受 #命令
     router.reg('/:cmd',...)//接受 #:id
 ```
+
+**基础路由**
+```javascript
+     /**
+       * 创建路由
+       * @param path 路由参数
+       * @param fn   回调函数 async
+       * @param opts  设置
+       */
+    router.reg(path,fn,opts)
+    
+    router.reg('/:cmd',async (data)=>{
+        "use strict";
+        console.log(body.cmd)
+    })
+```
+
+
 
 **例子** 
 简单使用:

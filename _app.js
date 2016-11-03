@@ -37,25 +37,22 @@ let r = new Route({
 
 r.reg('/:cmd',async (data)=>{
     "use strict";
-    console.log('route haozi')
-    console.log(data)
 })
-console.log(r.route())
-client.use(r.route())
+client.use(r.routes())
 
 
 let f = new Route({
     prefix : 'cao'
 })
 
-f.reg('/hello/:cmd',async (data)=>{
+f.reg('/hello/:cmd', (data)=>{
     "use strict";
     console.log(data)
 })
 
 
 
-client.use(f.route())
+client.use(f.routes())
 
 
 client.listen(11235,25565)
