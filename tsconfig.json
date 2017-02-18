@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "lib": ["es6","es7","ES2015"],
+    "noImplicitAny": true,
+    "sourceMap": true
+  },
+  "files": [
+
+  ],
+  "exclude": ["node_modules"]
+}
