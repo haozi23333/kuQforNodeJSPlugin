@@ -4,14 +4,10 @@
 
 import {createSocket,Socket} from 'dgram'
 import {EventEmitter} from 'events'
-import ErrnoException = NodeJS.ErrnoException
 import Timer = NodeJS.Timer
-import {ExceptionInfo} from "_debugger";
+import {unescape} from "querystring";
 
 
-const Iconv = require('iconv')
-let cov = new Iconv.Iconv('UTF-8','GBK')
-let recov = new Iconv.Iconv('GBK','UTF-8')
 
 
 /**
@@ -21,43 +17,57 @@ interface SocketConnectInitParm{
     /**
      * 服务器端口
      */
-    serverPort?:number
+    serverPort?: number
     /**
      * 客户端端口
      */
-    clientPort?:number
+    clientPort?: number
     /**
      * 服务器host
      */
-    serverHost?:string
+    serverHost?: string,
+    /**
+     * 是否同步推送
+     */
+    async?: boolean
 }
 
 interface CoolqMessage{
     /**
      * 消息唯一ID
      */
-    messageId:string,
+    messageId: string,
     /**
      * 时间戳
      */
-    timeStamp:number,
+    timeStamp: number,
     /**
      * 内容
      */
-    conent:string,
+    conent: string,
+}
+
+/**
+ *  Context
+ */
+interface messageContext{
+
+    message: CoolqMessage
+
 }
 
 /**
  *  socket连接类
  */
 export class SocketClinet extends EventEmitter{
-    private middleWares:Function[]
-    private serverSocket:Socket
-    private clientSocket:Socket
-    private serverPort:number
-    private clientPort:number
-    private Host:string
-    private heart:Timer
+    private middleWares: Function[]
+    private serverSocket: Socket
+    private clientSocket: Socket
+    private serverPort: number
+    private clientPort: number
+    private Host: string
+    private heart: Timer
+    private _callback: Promise<messageContext>
     private
 
     /**
@@ -79,22 +89,22 @@ export class SocketClinet extends EventEmitter{
      * @param serverHost? 服务器Host
      * @returns {Promise<void>}
      */
-    public async init (parm:SocketConnectInitParm = {}):Promise<void> {
+    public async init (parm:SocketConnectInitParm = {}): Promise<void> {
         this.serverSocket = createSocket('udp4')
         this.clientSocket = createSocket('udp4')
-        this.serverSocket.bind(parm.serverPort)
-        this.Host = parm.serverHost
-        this.clientPort = parm.clientPort || 25565
+        this.clientPort = parm.clientPort || 27788
         this.serverPort = parm.serverPort || 11235
-        console.log(this.listener)
+        this.serverSocket.bind(this.clientPort)
+        this.Host = parm.serverHost || '127.0.0.1'
         this.listener()
         let rinfo = await this.send(this.serverHello())
         this.emit('connect', rinfo)
+        this.heartRateService()
     }
 
-    private listener ():void {
+    private listener (): void {
         /**
-         *S
+         *
          */
         this.clientSocket.on('message', (mag:string) => {
             console.log(new Buffer(mag, 'base64').toString())
@@ -111,7 +121,12 @@ export class SocketClinet extends EventEmitter{
          */
         this.serverSocket.on('message', (msg:string, rinfo) => {
             let m =(new Buffer(msg, 'base64').toString()).split(' ')
-            this.emit('data',m)
+            console.log(m);
+            //this.callback(m)
+            if(m[0] == "group"){
+                console.log(unescape(m[1].replace(/\\u/g, '%u')))
+            }
+            this.emit('data', m)
         });
         /**
          *
@@ -131,10 +146,11 @@ export class SocketClinet extends EventEmitter{
     /**
      * 向服务器发送socket数据
      * @param data 数据
-     * @returns {IThenable<T>|Promise}
+     * @returns {Promise<void>|Promise|IThenable<void>}
      */
     public send (data):Promise<void> {
-        let msg = data.toString('base64')
+        console.log(data)
+        let msg:String = data.toString('base64')
         return new Promise<void>((s:Function, j:Function) => {
             this.clientSocket.send(msg,0,msg.length,this.serverPort, this.Host,function (err) {
                 if(err)
@@ -174,16 +190,16 @@ export class SocketClinet extends EventEmitter{
      * @returns {(ctx:Context, next?:Promise)=>any}
      * @api private
      */
-    private compose (middleware:Function[]):Function | Promise<void>{
-        return (ctx:CoolqMessage,next?:Promise<void>) => {
+    private compose (middleware:Function[]): Function{
+        return (ctx: CoolqMessage,next?: Promise<void>): Function|Promise<void> => {
             //定义索引表示执行到了第几个
-            let index = 0
+            let index:number = 0
             //定义处理函数
-            let dispatch:Function|Promise<void> = (i:number) => {
+            let dispatch:Function|Promise<void>|Promise<never> = (i:number) => {
                 //更新索引
                 index = i
                 //判断中间件是否存在 否则执行挂起的中间件
-                const cb:Function | Promise<void> = middleware[i] || next
+                const cb: any = middleware[i] || next
                 // 如果都不存在 就返回一个resolved形态的Promise
                 if(!cb){
                     return Promise.resolve()
@@ -193,7 +209,7 @@ export class SocketClinet extends EventEmitter{
                     //Promise.resolve的方法传入一个thenable的对象(可以then的) 返回的promise会跟随这个thenable对象直到返回resolve状态
                     //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve  mdn参考
                     // 当中间件await 的时候 递归执行 dispatch 函数调用下一个中间件
-                    return Promise.resolve(cb(ctx, ():Function|Promise<void> =>{
+                    return Promise.resolve(cb(ctx, ():any =>{
                         return dispatch(i + 1)
                     }))
                 }catch (err){
@@ -204,7 +220,12 @@ export class SocketClinet extends EventEmitter{
             return dispatch(0)
         }
     }
-
+    callback (ctx:messageContext) :Function {
+        let fn:Function = this.compose(this.middleWares)
+        return (ctx) => {
+            fn(ctx).then(() => false).catch()
+        }
+    }
     /**
      * 开始监听
      * 这个函数必须在use完成后调用
@@ -213,6 +234,7 @@ export class SocketClinet extends EventEmitter{
      * @param serverHost
      */
     listen (param?:SocketConnectInitParm) {
-        this.init(param)
+        this.init(param).then(_=>{})
     }
+
 }

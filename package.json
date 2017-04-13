@@ -4,7 +4,7 @@
   "description": "coolQ Socket Api for Nodejs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "./"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,7 @@
   "license": "WTFPL",
   "author": "haozi23333",
   "dependencies": {
-    "iconv": "^2.2.1",
-    "path-to-regexp": "^1.6.0"
+    "iconv": "^2.2.1"
   },
   "devDependencies": {
     "@types/es6-promise": "^0.0.32",
@@ -30,5 +29,11 @@
   },
   "bugs": {
     "url": "https://github.com/haozi23333/kuQforNodeJSPlugin/issues"
+  },
+  "ava": {
+    "files": [
+      "./test/*.js"
+    ],
+    "tap": true
   }
 }
