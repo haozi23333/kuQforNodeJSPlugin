@@ -3,11 +3,8 @@
  * 所有的查询请求通过代理层进行缓存查询
  */
 
-class Cache{
-    constructor () {
-
+export class Cache {
+    constructor() {
+        return null
     }
-
 }
-
-

@@ -4,24 +4,23 @@ import {MessageBase} from "./Message/MessageBase";
  * message Api
  */
 
-class MessageApi{
-    private _message:String
-    constructor () {
-
+class MessageApi {
+    private Mesage: string
+    constructor() {
+        this.Mesage = ""
     }
 
-
-    get message(): String {
-        return this._message;
+    get message(): string {
+        return this.Mesage
     }
 
-    public add <T extends MessageBase> (msg: T): this {
+    public add <T extends MessageBase>(msg: T): this {
 
         return this
     }
 
-    public toString (){
-
+    public toString() {
+        return null
     }
 }
 

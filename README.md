@@ -10,7 +10,7 @@ coolQ 的 基于socketApi 的 Nodejs SDK
 _(:зゝ∠)_
 
 ##Installation
- 1. 请安装 [org.dazzyd.cqsocketapi.cpk](https://github.com/yukixz/cqsocketapi/releases) 
+ 1. 请安装 [org.dazzyd.cqsocketapi.cpk](https://github.com/haozi23333/cqsocketapi)(本人fork 修改过的)
  2. 在酷Q中开启插件
  3. 重启酷Q
  4. 安装本模块

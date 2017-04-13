@@ -9,18 +9,17 @@ export class MessageBase {
     private _message: string
 
     public get message(): string {
-        return this._message;
+        return this._message
     }
     public set message(value: string) {
-        this._message = value;
+        this._message = value
     }
 
-    constructor (){
+    constructor() {
         this._message = ""
     }
 
-    toString () {
+    public toString() {
         return this._message
     }
-
 }
