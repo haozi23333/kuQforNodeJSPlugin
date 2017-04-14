@@ -6,11 +6,12 @@ import {createSocket, Socket} from 'dgram'
 import {EventEmitter} from 'events'
 import Timer = NodeJS.Timer
 import {unescape} from "querystring"
+import compose = require("koa-compose");
 
 /**
  * socket客户端初始化参数
  */
-interface SocketConnectInitParm {
+interface ISocketConnectInitParm {
     /**
      * 服务器端口
      */
@@ -29,7 +30,7 @@ interface SocketConnectInitParm {
     async?: boolean
 }
 
-interface CoolqMessage {
+interface ICoolqMessage {
     /**
      * 消息唯一ID
      */
@@ -47,25 +48,22 @@ interface CoolqMessage {
 /**
  *  Context
  */
-interface messageContext {
-
-    message: CoolqMessage
-
+interface IMessageContext {
+    message: ICoolqMessage
 }
 
 /**
  *  socket连接类
  */
-export class SocketClinet extends EventEmitter{
-    private middleWares: Function[]
+export class SocketClinet extends EventEmitter {
+    private middleWares: [(ctx: IMessageContext, next: Promise<void>) => void]
     private serverSocket: Socket
     private clientSocket: Socket
     private serverPort: number
     private clientPort: number
     private Host: string
     private heart: Timer
-    private _callback: Promise<messageContext>
-    private
+    private _callback: Promise<IMessageContext>
 
     /**
      *
@@ -74,7 +72,7 @@ export class SocketClinet extends EventEmitter{
      * @param serverHost
      * @constructor
      */
-    constructor () {
+    constructor() {
         super()
         this.middleWares = []
     }
@@ -86,7 +84,7 @@ export class SocketClinet extends EventEmitter{
      * @param serverHost? 服务器Host
      * @returns {Promise<void>}
      */
-    public async init(parm: SocketConnectInitParm = {}): Promise<void> {
+    public async init(parm: ISocketConnectInitParm = {}): Promise<void> {
         this.serverSocket = createSocket('udp4')
         this.clientSocket = createSocket('udp4')
         this.clientPort = parm.clientPort || 27788
@@ -119,22 +117,22 @@ export class SocketClinet extends EventEmitter{
         this.serverSocket.on('message', (msg: string, rinfo) => {
             const m = (new Buffer(msg, 'base64').toString()).split(' ')
             console.log(m)
-            if(m[0] == "group") {
+            if (m[0] === "group") {
                 console.log(unescape(m[1].replace(/\\u/g, '%u')))
             }
             this.emit('data', m)
-        });
+        })
         /**
          *
          */
         this.serverSocket.on('listening', () => {
             const address = this.serverSocket.address()
             console.log(`server listening ${address.address}:${address.port}`)
-        });
+        })
         /**
          *
          */
-        this.on('send', (data: string)=>{
+        this.on('send', (data: string) => {
             this.send(data)
         })
     }
@@ -148,12 +146,11 @@ export class SocketClinet extends EventEmitter{
     public send(data): Promise<void> {
         console.log(data)
         const msg: string = data.toString('base64')
-        return new Promise<void>((s: () => void, j: () => void) => {
+        return new Promise<void>((s: (value?: any) => void, j: (err) => void) => {
             this.clientSocket.send(msg, 0, msg.length, this.serverPort, this.Host, (err) => {
                 if (err) {
                     j(err)
-                }
-                else {
+                } else {
                     s()
                 }
             })
@@ -165,7 +162,7 @@ export class SocketClinet extends EventEmitter{
      * @returns {string}
      * @private
      */
-    private serverHello (): string {
+    private serverHello(): string {
         return `ClientHello ${this.clientPort}`
     }
 
@@ -173,16 +170,12 @@ export class SocketClinet extends EventEmitter{
      * 发送心跳包
      * 30秒一次
      */
-    private heartRateService (): void {
+    private heartRateService(): void {
         this.heart = setInterval(() => {
             this.send(this.serverHello())
         }, 300000)
     }
 
-    public use(fn:Function):SocketClinet {
-        this.middleWares.push(fn)
-        return this
-    }
 
     /**
      * 将所有中间件组合起来
@@ -190,29 +183,29 @@ export class SocketClinet extends EventEmitter{
      * @returns {(ctx:Context, next?:Promise)=>any}
      * @api private
      */
-    private compose(middleware: Function[]): Function{
-        return (ctx: CoolqMessage, next?: Promise<void>): Function|Promise<void> => {
+    private compose<T>(middleware: Array<compose.Middleware<T>>): (ctx: ICoolqMessage, next?: () => any) => void[] {
+        return (ctx: ICoolqMessage, next?: Promise<void>) => {
             // 定义索引表示执行到了第几个
             let index: number = 0
             // 定义处理函数
-            let dispatch: Function | Promise<void> | Promise<never> = (i:number) => {
+            const dispatch = (i: number) => {
                 // 更新索引
                 index = i
                 // 判断中间件是否存在 否则执行挂起的中间件
                 const cb: any = middleware[i] || next
                 // 如果都不存在 就返回一个resolved形态的Promise
-                if(!cb){
+                if (!cb) {
                     return Promise.resolve()
                 }
                 // 捕获执行过程中的异常 并以rejected形态的Promise对象抛出
-                try{
+                try {
                     // Promise.resolve的方法传入一个thenable的对象(可以then的) 返回的promise会跟随这个thenable对象直到返回resolve状态
                     // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve  mdn参考
                     // 当中间件await 的时候 递归执行 dispatch 函数调用下一个中间件
                     return Promise.resolve(cb(ctx, ():any =>{
                         return dispatch(i + 1)
                     }))
-                }catch (err){
+                }catch (err) {
                     return Promise.reject(err)
                 }
             }
@@ -220,12 +213,19 @@ export class SocketClinet extends EventEmitter{
             return dispatch(0)
         }
     }
-    callback(ctx: messageContext) :Function {
-        let fn: Function = this.compose(this.middleWares)
+
+    private callback(ctx: IMessageContext): () => void {
+        const fn: () => void = this.compose(this.middleWares)
         return (ctx) => {
             fn(ctx).then(() => false).catch()
         }
     }
+
+    public use(fn: () => void): SocketClinet {
+        this.middleWares.push(fn)
+        return this
+    }
+
     /**
      * 开始监听
      * 这个函数必须在use完成后调用
@@ -233,8 +233,7 @@ export class SocketClinet extends EventEmitter{
      * @param clientPort
      * @param serverHost
      */
-    listen(param?: SocketConnectInitParm) {
-        this.init(param).then(_=>{})
+    public listen(param?: ISocketConnectInitParm) {
+        this.init(param).then((_) => 1)
     }
-
 }

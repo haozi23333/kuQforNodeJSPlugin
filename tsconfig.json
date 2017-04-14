@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "es2015",
+    "target": "es6",
+    "module": "system",
     "moduleResolution": "node",
-    "lib": ["es6","es7","ES2015"],
+    "lib": ["es7", "es6"],
     "noImplicitAny": true,
-    "sourceMap": true
+    "outDir": "./lib",
+    "types": ["node", "koa"]
   },
   "files": [
-
+    "./src/**/*"
   ],
   "exclude": ["node_modules"]
 }

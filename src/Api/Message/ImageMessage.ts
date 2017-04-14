@@ -9,11 +9,11 @@ import {MessageBase} from "./MessageBase";
  */
 export class ImageMessage extends MessageBase{
 
-    constructor () {
+    constructor() {
         super()
     }
-    async moveFile () {
-
+    public async moveFile() {
+        return 1
     }
 }
 

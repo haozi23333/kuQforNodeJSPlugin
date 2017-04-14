@@ -25,7 +25,7 @@
     "@types/iconv": "^2.1.15",
     "@types/koa-compose": "^3.2.0",
     "@types/node": "^7.0.5",
-    "typescript": "^2.1.6"
+    "typescript": "^2.2.0"
   },
   "bugs": {
     "url": "https://github.com/haozi23333/kuQforNodeJSPlugin/issues"
