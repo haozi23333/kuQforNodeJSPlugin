@@ -6,6 +6,7 @@ import {createSocket, Socket} from 'dgram'
 import {EventEmitter} from 'events'
 import Timer = NodeJS.Timer
 import {unescape} from "querystring"
+import compose = require("koa-compose");
 
 /**
  * socket客户端初始化参数
@@ -155,6 +156,7 @@ export class SocketClinet extends EventEmitter {
          */
         this.serverSocket.on('message', (msg: string, rinfo) => {
             const m = (new Buffer(msg, 'base64').toString()).split(' ')
+            console.log(m)
             if (m[0] === "group") {
                 console.log(unescape(m[1].replace(/\\u/g, '%u')))
             }
@@ -172,6 +174,26 @@ export class SocketClinet extends EventEmitter {
          */
         this.on('send', (data: string) => {
             this.send(data)
+        })
+    }
+
+    /**
+     * 向服务器发送socket数据
+     * @param data 数据
+     * @returns {Promise<void>|Promise|IThenable<void>}
+     * @public
+     */
+    public send(data): Promise<void> {
+        console.log(data)
+        const msg: string = data.toString('base64')
+        return new Promise<void>((s: (value?: any) => void, j: (err) => void) => {
+            this.clientSocket.send(msg, 0, msg.length, this.serverPort, this.Host, (err) => {
+                if (err) {
+                    j(err)
+                } else {
+                    s()
+                }
+            })
         })
     }
 
@@ -231,6 +253,18 @@ export class SocketClinet extends EventEmitter {
         }
     }
 
+    private callback(ctx: IMessageContext): () => void {
+        const fn: () => void = this.compose(this.middleWares)
+        return (ctx) => {
+            fn(ctx).then(() => false).catch()
+        }
+    }
+
+    public use(fn: () => void): SocketClinet {
+        this.middleWares.push(fn)
+        return this
+    }
+
     /**
      *  收到信息的时候的回调 用来调用中间件
      * @param ctx
@@ -244,4 +278,7 @@ export class SocketClinet extends EventEmitter {
         }
     }
 
+    public listen(param?: ISocketConnectInitParm) {
+        this.init(param).then((_) => 1)
+    }
 }

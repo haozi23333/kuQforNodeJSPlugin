@@ -12,9 +12,8 @@ export class ImageMessage extends MessageBase {
     constructor() {
         super()
     }
-    async moveFile() {
 
+    public async moveFile() {
+        return 1
     }
 }
-
-

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     "target": "ES2017",
     "module": "ES6",
     "moduleResolution": "Node",
@@ -13,6 +14,18 @@
   },
   "include": [
     "src/**/*"
+=======
+    "target": "es6",
+    "module": "system",
+    "moduleResolution": "node",
+    "lib": ["es7", "es6"],
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "types": ["node", "koa"]
+  },
+  "files": [
+    "./src/**/*"
+>>>>>>> 13a33e056cc10df0430347ff6f673f928b488155
   ],
   "exclude": [
     "node_modules",
