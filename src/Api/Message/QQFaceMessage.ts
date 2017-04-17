@@ -2,7 +2,7 @@
  * Created by haozi on 4/12/2017.
  */
 
-import {MessageBase} from "./MessageBase"
+import { MessageBase } from "./MessageBase"
 
 /**
  * 婊情系统

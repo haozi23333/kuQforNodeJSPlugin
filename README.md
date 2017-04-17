@@ -1,6 +1,8 @@
 # coolQ for Nodejs SDK
 coolQ 的 基于socketApi 的 Nodejs SDK
 
+
+##version 3.0即将到来 qwq
 :simple_smile: 建议使用ES6/ES7的语法
 
 :star:  中间件！！
@@ -24,7 +26,7 @@ _(:зゝ∠)_
 
 
 ```javascript
-    import {Api,Client,Route} from './lib'
+    import {Api, Client, Route} from './lib'
 
 
     // 实例化 客户端

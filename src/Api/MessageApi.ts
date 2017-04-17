@@ -1,4 +1,4 @@
-import {MessageBase} from "./Message/MessageBase";
+import { MessageBase } from "./Message/MessageBase";
 /**
  * Created by haozi on 4/11/2017.
  * message Api
@@ -14,13 +14,12 @@ class MessageApi {
         return this.Mesage
     }
 
-    public add <T extends MessageBase>(msg: T): this {
-
+    public add<T extends MessageBase>(msg: T): this {
         return this
     }
 
-    public toString() {
-        return null
+    public toString(): string {
+        return ""
     }
 }
 
