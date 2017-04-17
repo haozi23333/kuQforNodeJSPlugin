@@ -1,0 +1,1 @@
+{"version":3,"file":"ImageMessage.js","sourceRoot":"","sources":["../../../src/Api/Message/ImageMessage.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,EAAE,WAAW,EAAE,MAAM,eAAe,CAAC;AAE5C;;GAEG;AACH,MAAM,mBAAoB,SAAQ,WAAW;IAEzC;QACI,KAAK,EAAE,CAAA;IACX,CAAC;IAEM,KAAK,CAAC,QAAQ;QACjB,MAAM,CAAC,CAAC,CAAA;IACZ,CAAC;CACJ"}
