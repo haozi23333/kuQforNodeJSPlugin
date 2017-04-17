@@ -8,7 +8,7 @@ import {MessageBase} from "./MessageBase"
  * 文字信息
  */
 export class TextMessage extends MessageBase {
-    constructor(message) {
+    constructor(message: string) {
         super()
         this.message = message
     }

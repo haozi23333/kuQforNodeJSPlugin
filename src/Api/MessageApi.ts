@@ -19,8 +19,8 @@ class MessageApi {
         return this
     }
 
-    public toString() {
-        return null
+    public toString(): string {
+        return "null"
     }
 }
 

@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "system",
+    "target": "es5",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["es7", "es6"],
     "noImplicitAny": true,
     "outDir": "./lib",
-    "types": ["node", "koa"]
+    "types": ["node", "Iconv"]
   },
-  "files": [
-    "./src/**/*"
+  "include": [
+    "./src"
   ],
   "exclude": ["node_modules"]
 }

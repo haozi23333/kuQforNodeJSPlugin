@@ -2,7 +2,7 @@
  * Created by haozi on 4/10/2017.
  */
 
-import {Iconv} from 'iconv'
+import * as Iconv from 'iconv'
 import {SocketClinet} from "../SocketConnect"
 
 const cov = new Iconv('UTF-8', 'GBK')
@@ -20,7 +20,7 @@ export class Api {
         this.client  = client
     }
 
-    public async send(data): Promise<void> {
+    public async send(data: string): Promise<void> {
         await this.client.send(data)
     }
     /**
@@ -29,7 +29,7 @@ export class Api {
      * @param msg   信息
      * @returns {*}
      */
-    public async PrivateMessage(to, msg): Promise<void> {
+    public async PrivateMessage(to: string, msg: string): Promise<void> {
         const data = "PrivateMessage " + to + ' ' + cov.convert(msg).toString('base64')
         await this.send(data)
     }
@@ -39,7 +39,7 @@ export class Api {
      * @param msg 信息
      * @returns {*}
      */
-    public async GroupMessage(to, msg): Promise<void> {
+    public async GroupMessage(to: string, msg: string): Promise<void> {
         const data = "GroupMessage " + to + ' ' + cov.convert(msg).toString('base64')
         await this.send(data)
     }
@@ -51,7 +51,7 @@ export class Api {
      * @param msg 信息
      * @returns {*}
      */
-    public async DiscussMessage(to, msg): Promise<void> {
+    public async DiscussMessage(to: string, msg: string): Promise<void> {
         const data = "DiscussMessage " + to + ' ' + cov.convert(msg).toString('base64')
         await this.send(data)
     }

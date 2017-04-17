@@ -52,11 +52,14 @@ interface IMessageContext {
     message: ICoolqMessage
 }
 
+type middlewareI = (ctx: IMessageContext, next: Promise<void>) => void
+
+
 /**
  *  socket连接类
  */
 export class SocketClinet extends EventEmitter {
-    private middleWares: [(ctx: IMessageContext, next: Promise<void>) => void]
+    private middleWares: middlewareI[]
     private serverSocket: Socket
     private clientSocket: Socket
     private serverPort: number
@@ -78,11 +81,8 @@ export class SocketClinet extends EventEmitter {
     }
 
     /**
-     *
-     * @param serverPort? 服务器端口
-     * @param clientPort? 客户端监听端口
-     * @param serverHost? 服务器Host
-     * @returns {Promise<void>}
+     * 
+     * @param parm ISocketConnectInitParm
      */
     public async init(parm: ISocketConnectInitParm = {}): Promise<void> {
         this.serverSocket = createSocket('udp4')
@@ -143,10 +143,10 @@ export class SocketClinet extends EventEmitter {
      * @returns {Promise<void>|Promise|IThenable<void>}
      * @public
      */
-    public send(data): Promise<void> {
+    public send(data: string): Promise<void> {
         console.log(data)
-        const msg: string = data.toString('base64')
-        return new Promise<void>((s: (value?: any) => void, j: (err) => void) => {
+        const msg: string = new Buffer(data).toString('base64')
+        return new Promise<void>((s: (value?: any) => void, j: (err: Error) => void) => {
             this.clientSocket.send(msg, 0, msg.length, this.serverPort, this.Host, (err) => {
                 if (err) {
                     j(err)
@@ -183,7 +183,7 @@ export class SocketClinet extends EventEmitter {
      * @returns {(ctx:Context, next?:Promise)=>any}
      * @api private
      */
-    private compose<T>(middleware: Array<compose.Middleware<T>>): (ctx: ICoolqMessage, next?: () => any) => void[] {
+    private compose<T>(middleware: middlewareI[]) {
         return (ctx: ICoolqMessage, next?: Promise<void>) => {
             // 定义索引表示执行到了第几个
             let index: number = 0
@@ -214,14 +214,14 @@ export class SocketClinet extends EventEmitter {
         }
     }
 
-    private callback(ctx: IMessageContext): () => void {
-        const fn: () => void = this.compose(this.middleWares)
+    private callback(ctx: IMessageContext): (ctx: ICoolqMessage) => void {
+        const fn = this.compose(this.middleWares)
         return (ctx) => {
             fn(ctx).then(() => false).catch()
         }
     }
 
-    public use(fn: () => void): SocketClinet {
+    public use(fn: middlewareI): SocketClinet {
         this.middleWares.push(fn)
         return this
     }
