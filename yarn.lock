@@ -4,29 +4,25 @@
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/es6-promise/-/es6-promise-0.0.32.tgz#3bcf44fb1e429f3df76188c8c6d874463ba371fd"
 
+"@types/iconv-lite":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@types/iconv-lite/-/iconv-lite-0.0.1.tgz#aa3b8bda2be512b1ae0a057b942e869c370a5569"
+  dependencies:
+    "@types/node" "*"
+
 "@types/iconv@^2.1.15":
   version "2.1.15"
   resolved "https://registry.yarnpkg.com/@types/iconv/-/iconv-2.1.15.tgz#01c4832c393140810fa181b5b5b214e7b0a06d27"
   dependencies:
     "@types/node" "*"
 
-"@types/koa-compose@^3.2.0":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@types/koa-compose/-/koa-compose-3.2.2.tgz#dc106e000bbf92a3ac900f756df47344887ee847"
-
 "@types/node@*", "@types/node@^7.0.5":
   version "7.0.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
 
-iconv@^2.2.1:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/iconv/-/iconv-2.2.3.tgz#e084d60eeb7d73da7f0a9c096e4c8abe090bfaed"
-  dependencies:
-    nan "^2.3.5"
-
-nan@^2.3.5:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.6.2.tgz#e4ff34e6c95fdfb5aecc08de6596f43605a7db45"
+iconv-lite:
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.15.tgz#fe265a218ac6a57cfe854927e9d04c19825eddeb"
 
 typescript@^2.2.0:
   version "2.3.0"

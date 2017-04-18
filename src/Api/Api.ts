@@ -2,10 +2,10 @@
  * Created by haozi on 4/10/2017.
  */
 
-import * as Iconv from 'iconv'
+import {decode} from 'iconv-lite'
 import {SocketClinet} from "../SocketConnect"
 
-const cov = new Iconv('UTF-8', 'GBK')
+const cov = (data: string) => decode(data, 'GBK')
 
 
 

@@ -6,7 +6,6 @@ import {createSocket, Socket} from 'dgram'
 import {EventEmitter} from 'events'
 import Timer = NodeJS.Timer
 import {unescape} from "querystring"
-import compose = require("koa-compose");
 
 /**
  * socket客户端初始化参数
@@ -67,6 +66,7 @@ export class SocketClinet extends EventEmitter {
     private Host: string
     private heart: Timer
     private _callback: Promise<IMessageContext>
+    private isOpen: boolean
 
     /**
      *
@@ -85,6 +85,7 @@ export class SocketClinet extends EventEmitter {
      * @param parm ISocketConnectInitParm
      */
     public async init(parm: ISocketConnectInitParm = {}): Promise<void> {
+        await this.close()
         this.serverSocket = createSocket('udp4')
         this.clientSocket = createSocket('udp4')
         this.clientPort = parm.clientPort || 27788
@@ -219,6 +220,25 @@ export class SocketClinet extends EventEmitter {
         return (ctx) => {
             fn(ctx).then(() => false).catch()
         }
+    }
+
+    private async close() {
+        if(this.clientSocket){
+            await this.closeSocket(this.clientSocket)
+            this.clientSocket = null
+        }
+        if(this.serverSocket){
+            await this.closeSocket(this.serverSocket)
+            this.serverSocket = null
+        }
+    }
+
+    private closeSocket(socket: Socket) {
+        return new Promise((s, j) => {
+            socket.close(() => {
+                s()
+            })
+        })
     }
 
     public use(fn: middlewareI): SocketClinet {

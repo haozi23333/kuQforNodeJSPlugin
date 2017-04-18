@@ -3,7 +3,10 @@
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es7", "es6"],
+    "lib": [
+      "es7",
+      "es6"
+    ],
     "noImplicitAny": true,
     "outDir": "./lib",
     "types": ["node", "Iconv"]
@@ -11,5 +14,8 @@
   "include": [
     "./src"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
 }
