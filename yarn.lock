@@ -4,21 +4,15 @@
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/es6-promise/-/es6-promise-0.0.32.tgz#3bcf44fb1e429f3df76188c8c6d874463ba371fd"
 
-"@types/iconv-lite":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@types/iconv-lite/-/iconv-lite-0.0.1.tgz#aa3b8bda2be512b1ae0a057b942e869c370a5569"
-  dependencies:
-    "@types/node" "*"
-
-"@types/iconv@^2.1.15":
-  version "2.1.15"
-  resolved "https://registry.yarnpkg.com/@types/iconv/-/iconv-2.1.15.tgz#01c4832c393140810fa181b5b5b214e7b0a06d27"
-  dependencies:
-    "@types/node" "*"
-
 "@types/node@*", "@types/node@^7.0.5":
   version "7.0.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.12.tgz#ae5f67a19c15f752148004db07cbbb372e69efc9"
+
+"@types/uuid":
+  version "2.0.29"
+  resolved "http://registry.npm.taobao.org/@types/uuid/download/@types/uuid-2.0.29.tgz#939a198ab73567f811ab84f670d2be9c25addd41"
+  dependencies:
+    "@types/node" "*"
 
 iconv-lite:
   version "0.4.15"
@@ -27,4 +21,8 @@ iconv-lite:
 typescript@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.0.tgz#2e63e09284392bc8158a2444c33e2093795c0418"
+
+uuid:
+  version "3.0.1"
+  resolved "http://registry.npm.taobao.org/uuid/download/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 

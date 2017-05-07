@@ -6,6 +6,7 @@ import {createSocket, Socket} from 'dgram'
 import {EventEmitter} from 'events'
 import Timer = NodeJS.Timer
 import {unescape} from "querystring"
+import {v4} from 'uuid'
 
 /**
  * socket客户端初始化参数
@@ -41,17 +42,15 @@ interface ICoolqMessage {
     /**
      * 内容
      */
-    conent: string,
+    content: string[],
+    /**
+     *  SocketClinet
+     */
+    app: SocketClinet
 }
 
-/**
- *  Context
- */
-interface IMessageContext {
-    message: ICoolqMessage
-}
 
-type middlewareI = (ctx: IMessageContext, next: Promise<void>) => void
+type middlewareI = (ctx: ICoolqMessage, next: Promise<void>) => void
 
 
 /**
@@ -65,7 +64,7 @@ export class SocketClinet extends EventEmitter {
     private clientPort: number
     private Host: string
     private heart: Timer
-    private _callback: Promise<IMessageContext>
+    private _callback: Promise<ICoolqMessage>
     private isOpen: boolean
 
     /**
@@ -85,17 +84,21 @@ export class SocketClinet extends EventEmitter {
      * @param parm ISocketConnectInitParm
      */
     public async init(parm: ISocketConnectInitParm = {}): Promise<void> {
-        await this.close()
-        this.serverSocket = createSocket('udp4')
-        this.clientSocket = createSocket('udp4')
-        this.clientPort = parm.clientPort || 27788
-        this.serverPort = parm.serverPort || 11235
-        this.serverSocket.bind(this.clientPort)
-        this.Host = parm.serverHost || '127.0.0.1'
-        this.listener()
-        const rinfo = await this.send(this.serverHello())
-        this.emit('connect', rinfo)
-        this.heartRateService()
+       try {
+           await this.close()
+           this.serverSocket = createSocket('udp4')
+           this.clientSocket = createSocket('udp4')
+           this.clientPort = parm.clientPort || 27788
+           this.serverPort = parm.serverPort || 11235
+           this.serverSocket.bind(this.clientPort)
+           this.Host = parm.serverHost || '127.0.0.1'
+           this.listener()
+           const rinfo = await this.send(this.serverHello())
+           this.emit('connect', rinfo)
+           this.heartRateService()
+       }catch (e) {
+           throw e
+       }
     }
 
     private listener(): void {
@@ -103,7 +106,6 @@ export class SocketClinet extends EventEmitter {
          *
          */
         this.clientSocket.on('message', (mag: string) => {
-            console.log(new Buffer(mag, 'base64').toString())
         })
         /**
          *
@@ -116,12 +118,13 @@ export class SocketClinet extends EventEmitter {
          *
          */
         this.serverSocket.on('message', (msg: string, rinfo) => {
-            const m = (new Buffer(msg, 'base64').toString()).split(' ')
-            console.log(m)
-            if (m[0] === "group") {
-                console.log(unescape(m[1].replace(/\\u/g, '%u')))
-            }
-            this.emit('data', m)
+            console.log(2)
+            this.callback()({
+                messageId: v4(),
+                timeStamp: new Date().getTime(),
+                content: (new Buffer(msg, 'base64').toString()).split(' '),
+                app: this
+            })
         })
         /**
          *
@@ -145,10 +148,8 @@ export class SocketClinet extends EventEmitter {
      * @public
      */
     public send(data: string): Promise<void> {
-        console.log(data)
-        const msg: string = new Buffer(data).toString('base64')
         return new Promise<void>((s: (value?: any) => void, j: (err: Error) => void) => {
-            this.clientSocket.send(msg, 0, msg.length, this.serverPort, this.Host, (err) => {
+            this.clientSocket.send(data, 0, data.length, this.serverPort, this.Host, (err) => {
                 if (err) {
                     j(err)
                 } else {
@@ -215,7 +216,7 @@ export class SocketClinet extends EventEmitter {
         }
     }
 
-    private callback(ctx: IMessageContext): (ctx: ICoolqMessage) => void {
+    private callback(): (ctx: ICoolqMessage) => void {
         const fn = this.compose(this.middleWares)
         return (ctx) => {
             fn(ctx).then(() => false).catch()
@@ -254,6 +255,6 @@ export class SocketClinet extends EventEmitter {
      * @param serverHost
      */
     public listen(param?: ISocketConnectInitParm) {
-        this.init(param).then((_) => 1)
+        return this.init(param)
     }
 }
