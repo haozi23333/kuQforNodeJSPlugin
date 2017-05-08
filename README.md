@@ -11,7 +11,8 @@ coolQ 的 基于socketApi 的 Nodejs SDK
 
 # Intro
 _(:зゝ∠)_
-详见[wiki](https://github.com/haozi23333/kuQforNodeJSPlugin/wiki)
+详见[wiki](https://github.com/haozi23333/kuQforNodeJSPlugin/wiki)  
+QQ 讨论组 **304876598**
 # Installation
  * 请安装 [org.dazzyd.cqsocketapi.cpk](https://github.com/haozi23333/cqsocketapi)(本人fork 修改过的)
  * 在酷Q中开启插件
