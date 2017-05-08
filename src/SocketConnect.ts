@@ -118,7 +118,6 @@ export class SocketClinet extends EventEmitter {
          *
          */
         this.serverSocket.on('message', (msg: string, rinfo) => {
-            console.log(2)
             this.callback()({
                 messageId: v4(),
                 timeStamp: new Date().getTime(),
