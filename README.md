@@ -1,4 +1,5 @@
-# coolQ for Nodejs SDK
+ coolQ for Nodejs SDK
+ ___
 coolQ 的 基于socketApi 的 Nodejs SDK
 
 :simple_smile: 建议使用ES6/ES7的语法
@@ -8,10 +9,10 @@ coolQ 的 基于socketApi 的 Nodejs SDK
 新版本去除了全部的组件，只保留了最基础的核心。希望大家利用中间件的特性来写出更多的中间件  
 新开
 
-##Intro
+#Intro
 _(:зゝ∠)_
 
-##Installation
+#Installation
  1. 请安装 [org.dazzyd.cqsocketapi.cpk](https://github.com/haozi23333/cqsocketapi)(本人fork 修改过的)
  2. 在酷Q中开启插件
  3. 重启酷Q
@@ -20,7 +21,7 @@ _(:зゝ∠)_
     `npm install node-coolq --save`
 
 
-##hello node-coolq
+#hello node-coolq
 ```javascript
     const cq = require('node-coolq')
     const app = new cq()
@@ -32,12 +33,11 @@ _(:зゝ∠)_
     })
     
     app.listen().then(_ => {})
-    
 ```
-##Getting started
+#Getting started
 
-##Middleware
-和一些webServer框架一样这个库有中间件，但是这个中间件必须使用Promise否则讲无法运行qwq
+#Middleware
+和一些webServer框架一样这个库有中间件，但是这个中间件必须使用Promise否则讲无法运行qwq  
 例如：
 ```javascript
 // echo app
@@ -50,12 +50,12 @@ app.use(async (ctx, next) => {
 app.listen({}).then(_ => {})
 ```
 
-##Community
+#Community
  - [wiki](https://github.com/haozi23333/kuQforNodeJSPlugin/wiki)  文档
  - [Middlewares](23333) 中间件s
 
 
-##License
+#License
 License -> [WTFPL](http://www.wtfpl.net/)
 
 for haozi23333
