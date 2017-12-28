@@ -7,7 +7,7 @@ import {EventEmitter} from 'events'
 import Timer = NodeJS.Timer
 import {unescape} from "querystring"
 import {v4} from 'uuid'
-
+import { decode , encode} from './coding'
 /**
  * socket客户端初始化参数
  */
@@ -46,7 +46,10 @@ interface ICoolqMessage {
     /**
      *  SocketClinet
      */
-    app: SocketClinet
+    app: SocketClinet,
+
+    encode: (str: string) => string,
+    decode: (str: string) => string
 }
 
 
@@ -80,7 +83,7 @@ export class SocketClinet extends EventEmitter {
     }
 
     /**
-     * 
+     *
      * @param parm ISocketConnectInitParm
      */
     public async init(parm: ISocketConnectInitParm = {}): Promise<void> {
@@ -122,7 +125,9 @@ export class SocketClinet extends EventEmitter {
                 messageId: v4(),
                 timeStamp: new Date().getTime(),
                 content: (new Buffer(msg, 'base64').toString()).split(' '),
-                app: this
+                app: this,
+                encode,
+                decode,
             })
         })
         /**

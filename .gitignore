@@ -2,3 +2,4 @@
 .idea
 #/lib
 test/*.js
+node_modules
