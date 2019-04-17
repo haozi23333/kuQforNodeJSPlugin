@@ -2,13 +2,12 @@
 import { createSocket, Socket } from 'dgram'
 import { EventEmitter } from 'events'
 
-const iconv = require('iconv-lite')
 
 
 /**
  * socket客户端初始化参数
  */
-interface clientOptions {
+export interface ISocketClientOptions {
     /**
      * 服务器端口
      */
@@ -40,19 +39,18 @@ export class SocketClient extends EventEmitter{
     private create_callback: (client: SocketClient) => any = null
 
     private client_socket: Socket;
-    private server_socket: Socket;
 
     private keep_heart: boolean;
 
     /**
      * 初始化所有参数
      */
-    constructor(options: clientOptions, createCallBack?: (client: SocketClient) => any) {
+    constructor(options: ISocketClientOptions, createCallBack?: (client: SocketClient) => any) {
         super()
         this.server_host = options.serverHost || '127.0.0.1';
         this.server_port = options.serverPort || 11235;
         this.client_host = options.clientHost || '0.0.0.0';
-        this.client_port = options.clientPort || 27788;
+        this.client_port = options.clientPort || 27789;
         this.create_callback = createCallBack;
         this.createSocket()
     }
@@ -80,7 +78,6 @@ export class SocketClient extends EventEmitter{
      * 发送信息
      */
     public async send(raw_data: string) {
-        // const data = this.encode(raw_data);
         return new Promise((s, j) => {
             this.client_socket.send(raw_data, 0, raw_data.length, this.server_port, this.server_host, (err) => {
                 if (err) {
@@ -89,20 +86,6 @@ export class SocketClient extends EventEmitter{
                 return s();
             })
         })
-    }
-
-    /**
-     * 编码
-     */
-    public encode(str: string) {
-        return (new Buffer(iconv.encode(str, 'gbk'))).toString('base64')
-    }
-
-    /**
-     * 解码
-     */
-   public decode(str: string) {
-        return iconv.decode(new Buffer(str, 'base64'), 'gbk')
     }
 
     /**
@@ -131,26 +114,21 @@ export class SocketClient extends EventEmitter{
      */
     public close() {
         this.keep_heart = false;
-        // if (this.server_socket) {
-        //     this.server_socket.close();
-        // }
-
         if (this.client_socket) {
             this.client_socket.close();
         }
     }
 
+    /**
+     * 监听数据
+     */
     private listener() {
         this.client_socket.on('message', (message: string) => {
-            console.log(new Buffer(message, 'base64').toString().split(' '))
+            this.emit('data', message);
         }) 
         this.client_socket.on('error', (error) => {
-            console.log(error)
+            this.emit('error', error);
+            this.close();
         }) 
-    }
-
-
-    private callback() {
-
     }
 }

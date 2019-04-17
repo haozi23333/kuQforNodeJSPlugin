@@ -1,4 +1,8 @@
 import { SocketClient } from './src/socketClient'
 
-const a = new SocketClient({});
+new SocketClient({
+    serverPort: 11235
+}, client => {
+    // client.send('PrivateMessage 296409654 123')
+});
 
