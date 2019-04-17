@@ -16,7 +16,7 @@ export enum CQ_CALLBACK_EVENT {
 /**
  * CQ 消息事件 Type
  */
-export enum MESSAGE_EVENT {
+export enum CQ_MESSAGE_EVENT {
     PrivateMessage = 'PrivateMessage',
     GroupMessage = 'GroupMessage',
     DiscussMessage = 'DiscussMessage',
@@ -28,3 +28,13 @@ export enum MESSAGE_EVENT {
     RequestAddGroup = 'RequestAddGroup',
     GroupUpload = 'GroupUpload',
 }
+
+/**
+ * 特殊的类型,  ALL 全部匹配
+ */
+export enum CQ_SPECIAL_TYPE {
+    ALL = 'ALL',
+    ALL_NO = 'ALL_NO'
+}
+
+export type CQ_EVENT = CQ_CALLBACK_EVENT | CQ_MESSAGE_EVENT | CQ_SPECIAL_TYPE

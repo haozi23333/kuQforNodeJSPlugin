@@ -124,9 +124,11 @@ export class SocketClient extends EventEmitter{
      */
     private listener() {
         this.client_socket.on('message', (message: string) => {
+            console.log(message)
             this.emit('data', message);
         }) 
         this.client_socket.on('error', (error) => {
+            console.log(error)
             this.emit('error', error);
             this.close();
         }) 
