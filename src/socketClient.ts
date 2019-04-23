@@ -92,7 +92,7 @@ export class SocketClient extends EventEmitter{
      * 心跳字符
      */
     private serverSayHelloStr() {
-        return `ClientHello ${this.client_port}`;
+        return `ClientHello ${this.client_port} ${this.client_host}`;
     }
 
     /**

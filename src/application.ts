@@ -17,7 +17,6 @@ export class Application {
 
     private listener() {
         this.client.on('data', (raw_data: string) => {
-            console.log(raw_data)
             this.callback()(new Context(this, raw_data));
         })
     }

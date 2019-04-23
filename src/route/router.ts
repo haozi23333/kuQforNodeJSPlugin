@@ -13,7 +13,8 @@ interface IStack {
     callback: any,
     prefix: string,
     once: boolean,
-    type: CQ_EVENT
+    type: CQ_EVENT[],
+    keys: any[]
 } 
 export class Route {
     private prefix: string;
@@ -24,10 +25,17 @@ export class Route {
         this.prefix = option.prefix;    
     }
 
-    public reg(message_type: CQ_EVENT, path: string, option = { once: false }, ...callback: IMiddleware[]) {
+    public reg(message_type: CQ_EVENT | CQ_EVENT[], path: string, option = { once: false }, ...callback: IMiddleware[]) {
+        const message_types = Array.isArray(message_type) ? message_type : [message_type];
+        const keys: any[] = [];
+        const regexp = pathToRegExp(this.prefix + ' ' + path, keys, {
+            start: false,
+            end: false,
+        });
         this.stack.push({
-            type: message_type,
-            regexp: pathToRegExp(this.prefix + ' ' + path),
+            type: message_types,
+            regexp,
+            keys,
             callback: compose(callback),
             prefix: this.prefix,
             once: option.once
@@ -38,14 +46,19 @@ export class Route {
         return async (ctx: Context, next: any) => {
             for (let stack: IStack, i = 0; i < this.stack.length ; i++ ) {
                 stack = this.stack[i];
-                if (stack.type === ctx.type) {
+                if (stack.type.includes(ctx.type)) {
                     if (stack.regexp.test(ctx.raw_data)) {
-                        const params = stack.regexp.exec(ctx.raw_data);
-                        console.log('命中')
-                        return;
+                        const params = {} as any;
+                        const data = stack.regexp.exec(ctx.raw_data);
+                        stack.keys.forEach((val, j) => {
+                            params[val.name] = data[1 + j];
+                        })
+                        ctx.params = params;
+                        return stack.callback(ctx);
                     }
                 }
             }
+            return next();
         }
     }
 }
