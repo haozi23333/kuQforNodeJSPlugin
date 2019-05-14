@@ -20,6 +20,9 @@
   "author": "haozi23333",
   "dependencies": {
     "iconv-lite": "^0.4.15",
+    "mariadb": "^2.0.5",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
     "path-to-regexp": "^3.0.0",
     "uuid": "^3.0.1"
   },
@@ -27,6 +30,8 @@
     "@types/es6-promise": "^0.0.32",
     "@types/node": "^7.10.5",
     "@types/uuid": "^2.0.29",
+    "axios": "^0.18.0",
+    "sequelize": "^5.8.5",
     "typescript": "^2.2.0"
   },
   "bugs": {
