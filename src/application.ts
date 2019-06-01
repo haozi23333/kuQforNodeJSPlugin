@@ -1,6 +1,7 @@
 import { SocketClient, ISocketClientOptions } from "./socketClient";
 import { Context, IContext } from "./context";
 import { compose } from "./util";
+import * as Sequelize from 'sequelize';
 
 export type IMiddleware = (ctx: IContext, next: Promise<void>) => void
 
@@ -9,6 +10,8 @@ export class Application {
     private middleWares: IMiddleware[]  = [];
 
     private client: SocketClient;
+
+    public mysql: Sequelize.Sequelize
 
     constructor(option: ISocketClientOptions = {}) {
         this.client = new SocketClient(option);
@@ -41,4 +44,3 @@ export class Application {
         this.client.send(raw_data);
     }
 }
-    

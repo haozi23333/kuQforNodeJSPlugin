@@ -135,9 +135,21 @@ route.reg([CQ_MESSAGE_EVENT.GroupMessage], '解绑 :qq', { once: false }, async 
 })
 
 route.reg([CQ_MESSAGE_EVENT.GroupMessage], '服务器信息', { once: false }, async (ctx) => {
-    const whiteListinfo = await getWhiteList();
+    let whiteListinfo;
+    try {
+        whiteListinfo = await getWhiteList();
+    } catch (e) {
+        app.send(GroupMessage(+ctx.data[2], "服务器连接失败，[CQ:at,qq=1067770480] 快去康康~"));
+        return;
+    }
     const serverInfo = await getServerInfo() as any;
-    const player_str = `服务器目前白名单共有 ${whiteListinfo.players.length} 个, 在线玩家 ${ serverInfo.players.length } 人`;
+    const player_str = `听你这么说，你很勇哦? 服务器目前白名单共有 ${whiteListinfo.players.length} 个, 在线玩家 ${ serverInfo.players.length } 人`;
+    app.send(GroupMessage(+ctx.data[2], player_str));
+})
+
+route.reg([CQ_MESSAGE_EVENT.GroupMessage], '服务器玩家', { once: false }, async (ctx) => {
+    const serverInfo = await getServerInfo() as any;
+    const player_str = `听你这么说，你很勇哦? 服务器目前 在线玩家 ${ serverInfo.players.length } 人, 分别为 ${  serverInfo.players.join(',  ').replace(/\§./g, '').replace(/[\ufffd]{2}./g, '') }`;
     app.send(GroupMessage(+ctx.data[2], player_str));
 })
 
@@ -154,7 +166,6 @@ route.reg([CQ_MESSAGE_EVENT.GroupMemberIncrease], '*', { once: false }, async (c
 });
 
 route.reg([CQ_MESSAGE_EVENT.GroupMemberDecrease], '*', { once: false }, async (ctx) => {
-    // app.send(GroupMessage(+ctx.data[2], `欢迎 [CQ:at,qq=${ctx.data[4]}] ，这位新人大老爷好，欢迎加入工艺小镇，请先仔细阅读群公告，需要注意的是，加入服务器需要先在群文件下载客户端整合包啦亲(づ ●─● )づ，记得找我这个AI添加您的白名单哦，格式只说一次所以要记住啦！格式是: #white <游戏ID>，一定要记得小窗敲我唷，公共场合不宜窃声私语x。其实如果忘了我还可以再告诉您一次的［小声］`))
     const me = await  sequelize.query('SELECT * FROM qq_link WHERE qq = ?', {
         replacements: [ctx.data[4]]
     });
@@ -174,11 +185,9 @@ route.reg([CQ_MESSAGE_EVENT.GroupMemberDecrease], '*', { once: false }, async (c
 const route2 = new Route({ prefix: '/' });
 
 route2.reg([CQ_MESSAGE_EVENT.GroupMessage], 'help', { once: false }, async (ctx) => {
-
     app.send(GroupMessage(+ctx.data[2], `[CQ:at,qq=${ctx.data[3]}] 你叫我帮你调出/help我就照做，那艺酱岂不是很没面子？不行～［对你做了个滑稽脸］`));
 
 })
-
 
 app.use(route.routes())
 app.use(route2.routes())

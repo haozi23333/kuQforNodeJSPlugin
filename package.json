@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./",
-    "complie": "tsc"
+    "complie": "tsc",
+    "app": "ts-node ./app/app.ts"
   },
   "repository": {
     "type": "git",
