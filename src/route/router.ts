@@ -46,7 +46,6 @@ export class Route {
         return async (ctx: Context, next: any) => {
             for (let stack: IStack, i = 0; i < this.stack.length ; i++ ) {
                 stack = this.stack[i];
-                console.log(ctx.type)
                 if (stack.type.includes(ctx.type)) {
                     console.log(stack.regexp)
                     if (this.filterEvent(ctx.type) || stack.regexp.test(ctx.raw_data)) {
@@ -73,5 +72,4 @@ export class Route {
         }
         return false;
     }
-
 }

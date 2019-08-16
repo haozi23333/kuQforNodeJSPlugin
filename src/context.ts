@@ -13,6 +13,8 @@ export interface IContext {
    message: CQ_MESSAGE;
    // regNextAction: () => void
    // parserMessage
+
+   send: (...args: string[]) => Promise<null>
 }
 
 export class Context implements IContext {
@@ -43,6 +45,10 @@ export class Context implements IContext {
 
    public get type() {
       return this.prefix as CQ_MESSAGE_EVENT | CQ_CALLBACK_EVENT;
+   }
+
+   public async send(...args: any[]) {
+      return this.app.send.apply(this.app, args);
    }
 
    private autoDecode(raw_string: string) {

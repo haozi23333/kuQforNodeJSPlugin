@@ -1,5 +1,5 @@
 import { encode } from "./util";
-import { deprecate } from "util";
+// import { deprecate } from "util";
 
 /**
  * 指定好友发送信息
