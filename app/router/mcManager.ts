@@ -3,6 +3,7 @@ import {dispatchCommand, getServerInfo, getWhiteList} from "../mcApi";
 import {GroupMessage} from "../../src/cqApi";
 import { Route } from '../../src/route/router'
 import config from "../config";
+import {isManagerGroup} from "../util";
 
 
 const route = new Route({ prefix: '#' });
@@ -29,6 +30,10 @@ route.reg([CQ_MESSAGE_EVENT.GroupMessage], '服务器玩家', { once: false }, a
 route.reg([CQ_MESSAGE_EVENT.GroupMessage], 'System Call :cmd*', { once: false }, async (ctx) => {
     if (ctx.data[2] !== config.managerGroup + '') {
         return;
+    }
+
+    if(isManagerGroup(ctx.data[2])){
+        return
     }
     await dispatchCommand(ctx.params.cmd);
     await ctx.send(GroupMessage(+ctx.data[2], `执行命令 ${ ctx.params.cmd } 成功 [CQ:image,file=5B9AF5FA6CD407AB7EE3C803805A1F33.jpg]`));

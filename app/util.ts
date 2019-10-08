@@ -40,3 +40,8 @@ export async function isBlacklist(qq: number) {
 export async function removeBlacklist() {
 
 }
+
+
+export function isManagerGroup(group_number: string | number) {
+    return ((group_number as number) - config.managerGroup) === 0
+}

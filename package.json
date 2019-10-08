@@ -20,20 +20,24 @@
   "license": "WTFPL",
   "author": "haozi23333",
   "dependencies": {
+    "@types/sequelize": "^4.28.5",
     "iconv-lite": "^0.4.15",
+    "ioredis": "^4.14.1",
     "mariadb": "^2.0.5",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "path-to-regexp": "^3.0.0",
+    "ts-node": "8.4.1",
+    "typescript": "2.3",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
     "@types/es6-promise": "^0.0.32",
+    "@types/ioredis": "^4.0.18",
     "@types/node": "^7.10.5",
     "@types/uuid": "^2.0.29",
     "axios": "^0.18.0",
-    "sequelize": "^5.8.5",
-    "typescript": "^2.2.0"
+    "sequelize": "^5.8.5"
   },
   "bugs": {
     "url": "https://github.com/haozi23333/kuQforNodeJSPlugin/issues"
